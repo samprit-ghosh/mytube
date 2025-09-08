@@ -32,8 +32,7 @@
 ├── assets/ # App icons, splash images
 └── README.md
 
-yaml
-Copy code
+
 
 ---
 
@@ -130,6 +129,6 @@ Copy code
 ✨ This README is **ready to paste** — just replace:  
 - `https://via.placeholder.com/...` → with real screenshots  
 - `MONGODB_URI` → with your connection string (if required)  
-- `[Click here to watch demo](#)` → with your recording link  
+-
 
-Do you also want me to **separate this into two READMEs** (`client/README.md` and `server/README.md`) so eachrepo looks clean individually
+
