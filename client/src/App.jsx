@@ -51,12 +51,34 @@ function App() {
 
   if (loading) {
     return (
-      <div className=" bg-gradient-to-br from-gray-900 to-black flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-white text-lg">Loading videos...</p>
-        </div>
+<div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-800">
+  <div className="flex flex-col items-center">
+    {/* Circle with play button in center */}
+    <div className="relative w-24 h-24">
+      {/* Spinning border */}
+      <div className="absolute inset-0 border-4 border-blue-500 border-t-transparent rounded-full animate-spin shadow-lg shadow-blue-500/50"></div>
+      
+      {/* Play button */}
+      <div className="absolute inset-0 flex items-center justify-center">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-10 h-10 text-blue-400"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path d="M8 5v14l11-7z" />
+        </svg>
       </div>
+    </div>
+
+    {/* Loading text */}
+    <p className="mt-6 text-white text-xl font-semibold animate-pulse tracking-wide">
+      Loading videos...
+    </p>
+  </div>
+</div>
+
+
     );
   }
 
