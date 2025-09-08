@@ -9,7 +9,7 @@ function App() {
   const iframeRef = useRef(null);
 
   useEffect(() => {
-    fetch('http://localhost:4000/videos')
+    fetch('https://mytube-fl0o.onrender.com/videos')
       .then(res => {
         if (!res.ok) {
           throw new Error(`Server returned ${res.status}`);
