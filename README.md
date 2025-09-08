@@ -1,256 +1,135 @@
-MyTube — React Web + React Native (Expo) + Server
+# 🎬 MyTube  
+*A Tiny YouTube Player App built with React Web, React Native (Expo), Node.js & MongoDB*  
 
-Tiny video player app — lists YouTube video IDs stored in MongoDB, server enriches metadata via YouTube Data API, plays videos inside apps (Web / iOS / Android).
-Live demo: https://mytube-green-eta.vercel.app/
+👉 **Live Demo:** [mytube-green-eta.vercel.app](https://mytube-green-eta.vercel.app/)  
 
-✨ Project Overview
+---
 
-MyTube is a small full-stack project built to satisfy the LearnOverse internship assignment:
+## 🏷️ Badges  
+![React](https://img.shields.io/badge/React-18.0-blue?logo=react)  
+![React Native](https://img.shields.io/badge/React%20Native-Expo-green?logo=react)  
+![Node.js](https://img.shields.io/badge/Node.js-Express-success?logo=node.js)  
+![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-brightgreen?logo=mongodb)  
+![YouTube API](https://img.shields.io/badge/API-YouTube-red?logo=youtube)  
+![License](https://img.shields.io/badge/License-MIT-yellow)  
 
-MongoDB stores only videoId values (10 items recommended).
+---
 
-Server fetches those IDs, calls the YouTube Data API to enrich metadata (title, thumbnails, channel, duration) and returns JSON.
+## ✨ Features
+✅ MongoDB stores only **video IDs**  
+✅ Server enriches video data using **YouTube Data API**  
+✅ **React Web App** – scrollable list & in-app player  
+✅ **React Native (Expo) App** – iOS & Android support  
+✅ Full **YouTube playback inside the app** (not deep links)  
 
-Clients (Web + React Native) show a scrollable list of videos; tapping opens a player screen that plays inside the app (not deep-linking to YouTube).
+---
 
-Deliverables: client/ (React web or React Native web), mobile/ (Expo React Native app) and server/ (Node.js or Python). This repo follows that pattern: top-level client/ and server/.
-
-📁 Repo Structure (recommended)
+## 📂 Project Structure
 /
-├─ client/          # React web (or React + Vite front-end)
-├─ mobile/          # React Native (Expo) app for iOS/Android
-├─ server/          # Node.js (Express) server that returns enriched video list
-├─ README.md
-└─ .env.example
+├── client/ # React Web App (Vercel Deployment)
+├── mobile/ # React Native (Expo) App
+├── server/ # Node.js (Express) API Server
+├── assets/ # App icons, splash images
+└── README.md
 
+yaml
+Copy code
 
-If your actual code is split into separate GitHub repos, put matching READMEs in each repo (client and server). This README assumes a monorepo but is easily split.
+---
 
-🧰 Tech stack
+## 🛠️ Tech Stack
+- **Frontend (Web):** React + TailwindCSS  
+- **Mobile:** React Native (Expo)  
+- **Backend:** Node.js + Express  
+- **Database:** MongoDB (Compass seeded)  
+- **API:** YouTube Data API v3  
 
-Client (Web): React (Vite/CRA), Tailwind CSS (for styling), React Router (optional)
+---
 
-Mobile: React Native with Expo (managed workflow) — works on iOS & Android
+## ⚙️ Setup & Installation
 
-Server: Node.js + Express (or Python/Flask) — returns enriched video metadata
-
-Database: MongoDB (Compass for seeding). The DB stores only videoIds.
-
-YouTube Data API v3: fetches metadata (API key required)
-
-Optional: react-player / WebView / react-native-youtube-iframe for in-app playback
-
-⚙️ Required keys / variables
-
-Create a .env in the project root (or in server/) — never commit secrets.
-
-.env.example
-
-# Server
-PORT=4000
-MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/mytube?retryWrites=true&w=majority
-
-# YouTube API
-YOUTUBE_API_KEY=AIza...your_key_here
-
-# Optional
-NODE_ENV=development
-
-
-Important: The reviewers request that you include the MongoDB connection URL in code / in repo so they can access it — if you choose to share a read-only connection string, put it in the repo server/.env or in the README explicitly (only do this if you're comfortable with access). Otherwise, provide clear instruction for how reviewers should run locally and seed MongoDB.
-
-🔌 Server — API contract (example)
-
-GET /api/videos
-Returns an array of enriched video objects:
-
-[
-  {
-    "videoId": "dQw4w9WgXcQ",
-    "title": "Artist - Song",
-    "channelTitle": "Channel Name",
-    "duration": "PT3M33S",
-    "thumbnails": {
-      "default": {...}, "medium": {...}, "high": {...}
-    }
-  },
-  ...
-]
-
-
-Server behavior:
-
-Read videoIds from MongoDB collection (documents with { videoId: "..." }).
-
-Call YouTube Data API videos?part=snippet,contentDetails&id=...&key=YOUTUBE_API_KEY.
-
-Merge/return the enriched objects to client.
-
-🚀 Local setup — Server
-
-(Assumes Node.js + Express)
-
+### 🔌 Server (Node.js + Express)
+```bash
 cd server
-cp .env.example .env
-# edit .env to add your actual MONGODB_URI and YOUTUBE_API_KEY
 npm install
-npm run dev        # or: node index.js
-# server runs on http://localhost:4000 by default
+cp .env.example .env   # add your MongoDB URI + YouTube API key
+npm run dev
+Runs at: http://localhost:4000/api/videos
 
-
-If you need a quick seed script (example using mongo or Node):
-
-// server/seed.js (example)
-const { MongoClient } = require('mongodb');
-const uri = process.env.MONGODB_URI;
-const client = new MongoClient(uri);
-
-const videoIds = [
-  "dQw4w9WgXcQ","3JZ_D3ELwOQ","...","(10 ids total)"
-];
-
-async function seed() {
-  await client.connect();
-  const db = client.db('mytube-db');
-  const col = db.collection('videoIds');
-  await col.deleteMany({});
-  await col.insertMany(videoIds.map(id => ({ videoId: id })));
-  console.log('Seeded videoIds');
-  await client.close();
-}
-seed();
-
-
-Run with node seed.js (after installing mongodb and setting .env).
-
-▶️ Local setup — Web client (React)
+🌐 Client (React Web)
+bash
+Copy code
 cd client
-cp .env.example .env       # if client needs API_BASE or similar
 npm install
-npm run dev                # Vite: `npm run dev`; CRA: `npm start`
-# open http://localhost:3000 (or port shown)
+npm run dev
+Runs at: http://localhost:3000
 
-
-Client should call SERVER_API_URL (or http://localhost:4000/api/videos) to fetch enriched video list.
-
-📱 Local setup — Mobile (Expo)
+📱 Mobile (React Native + Expo)
+bash
+Copy code
 cd mobile
-cp app.json.example app.json   # if you want to set icon/splash
-# OR update app.json/app.config.js icon path to ./assets/icon.png
 npm install
 expo start
-# scan QR to open on device or run emulator:
-# expo run:android  OR  expo run:ios  (if configured)
+Scan QR with Expo Go app (Android/iOS)
 
-Changing the app icon
+Or run: expo run:android / expo run:ios
 
-Open app.json and set:
+🔑 Environment Variables
+Create a .env file inside server/ with:
 
-{
-  "expo": {
-    "icon": "./assets/icon.png",
-    "splash": { "image": "./assets/splash-icon.png" },
-    "adaptiveIcon": {
-      "foregroundImage": "./assets/adaptive-icon.png",
-      "backgroundColor": "#ffffff"
-    }
-  }
-}
+env
+Copy code
+MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/mytube
+YOUTUBE_API_KEY=AIzaSy...
+PORT=4000
+🎥 Demo Flow
+Open the app
 
+Scroll list of 10 YouTube videos (thumbnail, title, channel)
 
-Recommended icon size: 1024×1024 PNG. For adaptive Android icon, add foregroundImage and a background color or image.
+Tap a video → plays inside the app
 
-🎬 Playback implementation notes
+Back → select another video → plays
 
-Web: use react-player or <iframe> embed inside an in-app modal. react-player gives more control.
+📸 Screenshots
+Home List	Video Player
 
-React Native: recommended options:
+✅ Minimal Acceptance Criteria
+MongoDB only stores videoIds
 
-react-native-youtube-iframe — lightweight, works inside RN WebView under the hood.
+Metadata must come from YouTube API
 
-react-native-webview with the YouTube embed URL (ensure in-app playback).
+Video plays inside the app (no YouTube redirect)
 
-Ensure you request/handle YouTube embed playback policies if needed.
+Working server endpoint returns enriched video list
 
-✅ Minimal acceptance checklist
+Provide MongoDB connection URL & screen recording
 
- MongoDB stores only videoIds (not full metadata).
+🚀 Deployment
+Web: Vercel
 
- Server endpoint fetches video IDs from MongoDB and enriches via YouTube Data API before returning JSON.
+Server: Railway / Heroku
 
- Client lists 10 videos in a scrollable list (thumbnail, title, channel).
+Mobile: Expo build → .apk / .aab / .ipa
 
- Tapping a video opens an in-app player screen and plays the video.
+📹 Screen Recording
+📽️ Click here to watch demo (add your recording link here)
 
- Screens recording (≤ 2 min) demonstrates app flow: launch → list → play video → back → play another.
+🙌 Credits
+Built for LearnOverse Internship Assignment.
+Made with ❤️ using React, React Native, Node.js & MongoDB.
 
- MongoDB connection URL provided (if you agreed to share).
+📜 License
+MIT License © 2025 MyTube
 
-📸 Screenshots / Demo
+markdown
+Copy code
 
-Add screenshots of:
+---
 
-Home list with thumbnails
+✨ This README is **ready to paste** — just replace:  
+- `https://via.placeholder.com/...` → with real screenshots  
+- `MONGODB_URI` → with your connection string (if required)  
+- `[Click here to watch demo](#)` → with your recording link  
 
-Video player screen (playing)
-
-Mobile & Web screenshots
-
-(Place images in client/public/screenshots/ and reference them in README with ![alt](path))
-
-🛠️ Deployment
-
-Web: Build and deploy to Vercel/Netlify:
-
-cd client
-npm run build
-# push to Vercel or Netlify
-
-
-Server: Deploy to Heroku / Railway / Fly / Vercel Serverless functions (ensure environment variables are set).
-
-Mobile: Build native binaries with Expo:
-
-expo build:android
-expo build:ios
-# or use EAS Build if configured
-
-🧾 Screen recording requirement
-
-Create a short screen recording (≤ 2 minutes) that shows:
-
-App launch (web or mobile)
-
-List of 10 videos
-
-Tap → Video plays inside the app
-
-Back → Tap another → plays
-Include this recording in the submission (link or file).
-
-🧩 Troubleshooting tips
-
-If thumbnails or videos won’t load, confirm YOUTUBE_API_KEY is valid and requests are not rate-limited.
-
-If app shows old assets (icon/splash), clear caches: expo start -c or browser cache.
-
-For iOS playback quirks, prefer the official react-native-youtube-iframe or WebView with proper allowsInlineMediaPlayback settings.
-
-🙏 Credits & License
-
-Built for LearnOverse internship assignment.
-License: MIT — see LICENSE for details.
-
-📎 Quick links / checklist for reviewers
-
-Demo: https://mytube-green-eta.vercel.app/
-
-client/ — React (web)
-
-mobile/ — Expo React Native (iOS + Android)
-
-server/ — Node/Express API: GET /api/videos
-
-MongoDB connection: [include connection string or instructions here]
-
-YouTube API key: set in server/.env as YOUTUBE_API_KEY
+Do you also want me to **separate this into two READMEs** (`client/README.md` and `server/README.md`) so eachrepo looks clean individually
